@@ -1,0 +1,71 @@
+package com.cmhzteam.controller.lyp;
+
+import com.cmhzteam.entity.lyp.Comment;
+import com.cmhzteam.entity.lyp.Page;
+import com.cmhzteam.service.lyp.impl.CommentServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+@Controller
+@RequestMapping("/comment")
+public class CommentController {
+    @Autowired
+    CommentServiceImpl service;
+
+    @RequestMapping("/findByGid")
+    public String findByGid(@RequestParam("gid") int gid, Model model) {
+        List<Comment> list = service.findByGid(gid);
+        for (Comment comment : list) {
+            System.out.println(comment);
+        }
+        model.addAttribute("comList", list);
+
+        return "product";
+    }
+
+    @RequestMapping("/add")
+    public String add(Comment comment, Model model) {
+        int num = service.add(comment);
+        System.out.println(num);
+        return "index";
+    }
+
+    @RequestMapping("findByGidPage")
+    public String findByGidPage(Page page, HttpServletRequest request, Model model) {
+        int index = 1;
+        String index1 = request.getParameter("index");
+        if (index1 != null && index1.trim().length() != 0) {
+            index = Integer.parseInt(index1);
+        }
+        page.setIndex(index);//当前页
+        page.setPageSize(3);//每页3条记录
+
+        int MaxSum = service.findSumByGid(1);
+        page.setAllSize(service.findSumByGid(1));//总记录数
+
+        int maxPage = (int) Math.ceil(MaxSum / 3);
+        page.setMaxPage(maxPage);//最大页数
+
+        int prePage = index == 1 ? 1 : index - 1;
+        page.setPrePage(prePage);//上一页
+
+        int nextPage = index == maxPage ? maxPage : index + 1;
+        page.setNextPage(nextPage);//下一页
+
+        List<Comment> comments = service.findByGidPage(page);
+        page.setList(comments);//所要显示的数据（评论内容）
+
+        System.out.println(page);
+
+        model.addAttribute("msgByPage", page);
+        return "product";
+    }
+
+
+}

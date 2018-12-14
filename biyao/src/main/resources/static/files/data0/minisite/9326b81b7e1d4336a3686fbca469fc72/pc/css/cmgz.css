@@ -1,0 +1,24 @@
+ul li.lit{
+	float: left;
+	margin-right: 25px;
+	cursor: pointer;
+}
+ul li.lit:last-child{
+	float: right;
+	margin-right: 0px;
+}
+.banner_con_div1{
+	width: 220px;
+	height: 220px;
+}
+.banner_con_div2{
+	width: 220px;
+	height: 40px;
+	text-align: center;
+	color: tomato;
+	background-color: white;
+}
+.banner_con_div2 p{
+	font-size: 13px;
+	background-color: white;
+}

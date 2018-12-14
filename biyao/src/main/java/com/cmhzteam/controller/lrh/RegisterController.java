@@ -1,0 +1,190 @@
+package com.cmhzteam.controller.lrh;
+
+import com.cmhzteam.service.lrh.Impl.UserServiceImpl;
+import com.cmhzteam.util.lrh.MD5;
+import com.google.gson.Gson;
+import com.zhenzi.sms.ZhenziSmsClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+@Controller
+public class RegisterController {
+    @Autowired
+    UserServiceImpl userService;
+    @Autowired
+    MD5 md5;
+
+    /**
+     * 获取验证码
+     *
+     * @param Mobile   手机号
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping(value = "/getVerifyCode", method = RequestMethod.POST)
+    public void getVerifyCode(@RequestParam("Mobile") String Mobile,
+                              HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        //根据用户名查找用户
+        boolean flag = userService.findUser(Mobile);
+        //用户名的提示信息
+        String usernameMSG = null;
+        //短信验证的提示信息
+        String verifyCodeMSG = null;
+        //短信验证的状态
+        boolean f = false;
+        Gson json = new Gson();
+        if (flag) {
+            usernameMSG = "账号可以使用";
+            //随机生成6位数验证码
+            String verifyCode = String.valueOf(new Random().nextInt(100000) + 100000);
+            //调用短信平台的发布接口
+            ZhenziSmsClient client = new ZhenziSmsClient(" https://sms_developer.zhenzikj.com",
+                    "100288", "779b4dd9-8f4d-4393-a385-58464fea65b4");
+            //短信的内容
+            String result = null;
+            try {
+                //result是个json格式的字符串，存放的是结果集，有两种结果：
+                result = client.send(Mobile, "您的验证码为:" + verifyCode + ",该码有效期为5分钟，该码只能使用一次！");
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            //json数据-->map集合
+            Map resultMap = json.fromJson(result, Map.class);
+            if ("0".equals(resultMap.get("code"))) {
+                verifyCodeMSG = "短信验证失败，请重试！";
+                f = false;
+            } else {
+                verifyCodeMSG = "短信验证成功！";
+                f = true;
+                //将验证码和发送时间存到session中
+                HttpSession session = request.getSession();
+                session.setAttribute("curTime", System.currentTimeMillis());
+                session.setAttribute("verifyCode", verifyCode);
+            }
+
+        } else {
+            usernameMSG = "账号已被使用";
+        }
+        map.put("verifyCodeMSG", verifyCodeMSG);
+        map.put("flag", f);
+        map.put("usernameMSG", usernameMSG);
+        //将map数据转换成json数据
+        String strMap = json.toJson(map);
+        response.setCharacterEncoding("utf-8");
+        response.getWriter().write(strMap);
+    }
+
+    /**
+     * @param Mobile       手机号
+     * @param password     密码
+     * @param securitycode 验证码
+     * @param response
+     * @param request
+     * @param model
+     * @throws IOException
+     */
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public void register(@RequestParam("Mobile") String Mobile,
+                         @RequestParam("password") String password,
+                         @RequestParam("securitycode") String securitycode,
+                         HttpServletResponse response, HttpServletRequest request,
+                         Model model) throws IOException {
+        HttpSession session = null;
+        session = request.getSession();
+        Gson json = new Gson();
+        Map<String, Object> map = new HashMap<String, Object>();
+        //用户注册的提示信息
+        String msg = "";
+        //设置注册状态：true or false
+        boolean flag = false;
+        //从session中获取验证码
+        String verifyCode = (String) session.getAttribute("verifyCode");
+        if (verifyCode == null) {
+            msg = "请先获取验证码！";
+            map.put("msg", msg);
+            map.put("flag", flag);
+            String st = json.toJson(map);
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().write(st);
+            return;
+        }
+        //从session中获取发送验证码的时间
+        long curTime = (long) session.getAttribute("curTime");
+        System.out.println(curTime);
+
+        if (securitycode != null) {
+            //验证码校验
+            if (!verifyCode.equals(securitycode.trim())) {
+                msg = "验证码不正确!";
+                map.put("msg", msg);
+                map.put("flag", flag);
+                String st = json.toJson(map);
+                response.setCharacterEncoding("utf-8");
+                response.getWriter().write(st);
+                return;
+            }
+            //时间校验
+            if ((System.currentTimeMillis() - curTime) > 3000000) {
+                System.out.println((System.currentTimeMillis() - curTime));
+                msg = "验证码过时";
+                map.put("msg", msg);
+                map.put("flag", flag);
+                String st = json.toJson(map);
+                response.setCharacterEncoding("utf-8");
+                response.getWriter().write(st);
+                return;
+            }
+            String pwd = md5.getMD5(password);
+            //根据用户名查找用户
+            boolean f = userService.findUser(Mobile);
+
+            if (f) {
+                //新增用户
+                boolean rg = userService.register(Mobile, pwd);
+                if (rg) {
+                    msg = "注册成功";
+                    map.put("msg", msg);
+                    flag = true;
+                    map.put("flag", flag);
+                    String st = json.toJson(map);
+                    response.setCharacterEncoding("utf-8");
+                    response.getWriter().write(st);
+                    return;
+                } else {
+                    msg = "注册失败，请从新来过！";
+                    map.put("msg", msg);
+                    map.put("flag", flag);
+                    String st = json.toJson(map);
+                    response.setCharacterEncoding("utf-8");
+                    response.getWriter().write(st);
+                    return;
+                }
+            }
+
+        } else {
+            msg = "请输入验证码！";
+            map.put("msg", msg);
+            map.put("flag", flag);
+            String st = json.toJson(map);
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().write(st);
+            return;
+        }
+
+    }
+}

@@ -1,0 +1,65 @@
+.pingjia {
+    width: 1200px;
+}
+
+#commbox {
+    width: 1200px;
+}
+
+#commbox li {
+    width: 1200px;
+    height: 100px;
+    margin: 5px 0;
+    background-color: gainsboro;
+}
+
+#commbox li .commleft {
+    width: 100px;
+    height: 99px;
+    float: left;
+}
+
+#commbox li .commleft .touxiang {
+    width: 50px;
+    height: 50px;
+    background-color: cornflowerblue;
+    margin: 10px auto;
+}
+
+#commbox li .commleft p {
+    text-align: center;
+}
+
+#commbox li .commtop {
+    width: 1100px;
+    height: 78px;
+    float: left;
+
+}
+
+#commbox li .commtop p {
+    padding: 20px;
+    font-size: 16px;
+}
+
+#commbox li .commbuttom {
+    width: 1100px;
+    height: 20px;
+    float: left;
+}
+
+#commbox li .commbuttom span {
+    color: grey;
+    margin-left: 20px;
+}
+
+.fenye {
+    width: 1200px;
+    height: 30px;
+}
+
+.fenye a {
+    font-size: 14px;
+    color: gray;
+    margin-left: 50px;
+}

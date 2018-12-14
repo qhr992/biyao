@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmhzteam.dao.zhj.indexDao">
+    <resultMap id="ppType" type="Ptype">
+        <id column="PID" property="pid"/>
+        <result column="PTYPE_NAME" property="ptype_name"/>
+        <collection property="slist" ofType="Stype">
+            <id column="SUB_TYPE_ID" property="sub_type_id"/>
+            <result column="PID" property="pid"/>
+            <result column="SUB_TYPE_NAME" property="sub_type_name"/>
+        </collection>
+    </resultMap>
+    <select id="manLoad" resultType="Good">
+        select * from biyao_good_host where GTAPY like "%男装%" limit 0,5
+    </select>
+    <select id="womenLoad" resultType="Good">
+        select * from biyao_good_host where GTAPY like "%女装%" limit 0,5
+    </select>
+    <select id="liveLoad" resultType="Good">
+        select * from biyao_good_host where GTAPY like "%家电%" limit 0,5
+    </select>
+    <select id="getType" resultMap="ppType">
+        select  * from biyao_goodtype_parent p,biyao_goodtype_sub s
+        where p.pid=s.pid
+    </select>
+
+</mapper>

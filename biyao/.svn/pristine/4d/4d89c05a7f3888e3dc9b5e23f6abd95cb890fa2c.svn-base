@@ -1,0 +1,13 @@
+package com.cmhzteam.dao.zhj;
+
+import com.cmhzteam.entity.zhj.Good;
+
+import java.util.List;
+
+public interface indexDao {
+    public List<Good> manLoad();
+
+    public List<Good> womenLoad();
+
+    public List<Good> liveLoad();
+}

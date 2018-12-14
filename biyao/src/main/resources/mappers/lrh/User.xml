@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cmhzteam.dao.lrh.UserMapper">
+
+    <select id="selectUserByUsername" resultType="com.cmhzteam.entity.lrh.User" parameterType="String">
+        select * from biyao_user where phone=#{Mobile}
+    </select>
+
+    <select id="selectUserByUsernameAndPassword" resultType="com.cmhzteam.entity.lrh.User" parameterType="map">
+        select * from biyao_user where phone=#{Mobile} and password=#{password}
+    </select>
+
+    <insert id="insertUser" parameterType="map">
+        insert into biyao_user(phone,password) values(#{Mobile},#{password})
+    </insert>
+</mapper>

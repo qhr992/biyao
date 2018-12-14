@@ -1,0 +1,55 @@
+package com.cmhzteam.config;
+
+import com.github.pagehelper.PageHelper;
+import org.apache.ibatis.plugin.Interceptor;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.Properties;
+
+@Configuration
+@MapperScan("com.cmhzteam.dao")
+public class BiYaoMyBatisConfig {
+    @Bean
+    @ConditionalOnMissingBean//当容器里没有指定的Bean的情况下创建该对象
+    public SqlSessionFactoryBean getSqlSessionFactoryBean(DataSource dataSource){
+        //创建sqlSession工厂对象
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        //设置数据源相关属性
+        sqlSessionFactoryBean.setDataSource(dataSource);
+        //分页插件
+        PageHelper pageHelper = new PageHelper();
+        Properties props = new Properties();
+        props.setProperty("reasonable", "true");
+        props.setProperty("supportMethodsArguments", "true");
+        props.setProperty("returnPageInfo", "check");
+        props.setProperty("params", "count=countSql");
+        pageHelper.setProperties(props);
+        //添加插件
+        sqlSessionFactoryBean.setPlugins(new Interceptor[]{pageHelper});
+
+        //加载mybatis主配置文件
+        sqlSessionFactoryBean.setConfigLocation(
+                new PathMatchingResourcePatternResolver().getResource("classpath:mybatis-config.xml")
+        );
+        //别名映射
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.cmhzteam.entity");
+        //配置mapper的扫描,找到所有的Mapper.xml映射文件
+
+        Resource[] resources;
+        try {
+            resources = new PathMatchingResourcePatternResolver().getResources("classpath:mappers/**/*.xml");
+            sqlSessionFactoryBean.setMapperLocations(resources);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sqlSessionFactoryBean;
+    }
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cmhzteam.dao.lyp.CommentMapper">
+
+    <resultMap id="comList" type="comment">
+        <id column="CID" property="cid"/>
+        <result column="GID" property="gid"/>
+        <result column="CONTENT" property="content"/>
+        <result column="LEVEL" property="level"/>
+        <result column="TIME" property="time"/>
+        <association property="user" javaType="User">
+            <id column="USERID" property="userid"/>
+            <result column="PHONE" property="phone"/>
+        </association>
+    </resultMap>
+
+    <select id="findByGid" parameterType="int" resultMap="comList">
+        select * from biyao_comment bc, biyao_user bu where gid=1 and bc.USERID=bu.USERID group by TIME desc
+    </select>
+
+    <insert id="add" parameterType="Comment">
+        insert into biyao_comment values (null, #{gid},#{userid},#{content},#{level},#{time})
+    </insert>
+
+    <select id="findSumByGid" parameterType="int" resultType="int">
+        select count(*) from biyao_comment where gid=#{gid}
+    </select>
+
+    <select id="findByGidPage" parameterType="page" resultMap="comList">
+        select * from biyao_comment where gid=#{gid} group by TIME desc limit #{index},#{page}
+    </select>
+
+</mapper>

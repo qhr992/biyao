@@ -1,0 +1,34 @@
+package com.cmhzteam.service.lrh;
+
+import com.cmhzteam.entity.lrh.User;
+
+/**
+ * 用户功能接口
+ */
+public interface UserService {
+    /**
+     * 根据用户名来查找对象
+     *
+     * @param username 用户名
+     * @return 有、没有
+     */
+    public boolean findUser(String username);
+
+    /**
+     * 用户登录
+     *
+     * @param Mobile 用户名
+     * @param password 密码
+     * @return User 用户
+     */
+    public User login(String Mobile, String password);
+
+    /**
+     * 用户注册
+     *
+     * @param Mobile 账号/用户名
+     * @param password 密码
+     * @return 成功/失败
+     */
+    public boolean register(String Mobile, String password);
+}

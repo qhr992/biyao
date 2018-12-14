@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cmhzteam.dao.lyp.GoodDetailMapper">
+
+    <resultMap id="gd" type="GoodDetail">
+        <id property="gdid" column="GDID"/>
+        <result property="promise" column="PROMISE"/>
+        <result property="express" column="EXPRESS"/>
+        <result property="description" column="DESCRIPTION"/>
+        <association property="good" javaType="Good">
+            <id property="gid" column="GID"/>
+            <result property="gname" column="GNAME"/>
+            <result property="gtitle" column="GTITLE"/>
+            <result property="cur_price" column="CUR_PRICE"/>
+            <result property="old_price" column="OLD_PRICE"/>
+            <result property="gimage_url" column="GIMAGE_URL"/>
+            <result property="gtype" column="GTYPE"/>
+        </association>
+        <collection property="imageList" ofType="GoodImage">
+            <id property="giid" column="GIID"/>
+            <result property="gid" column="GID"/>
+            <result property="image_url" column="IMAGE_URL"/>
+        </collection>
+    </resultMap>
+
+    <select id="findGoodDetail" parameterType="int" resultMap="gd">
+      select * from biyao_good_host bgh, biyao_good_detail bgd, biyao_good_image bgi where bgh.GID=bgd.GID and bgh.GID=bgi.GID and bgh.GID=#{gid};
+    </select>
+
+    <resultMap id="gp" type="com.cmhzteam.entity.lyp.GoodMainParam">
+        <id property="gmpid" column="GMPID"/>
+        <result property="gid" column="GID"/>
+        <result property="mparam_name" column="MPARAM_NAME"/>
+        <result property="add_price" column="ADD_PRICE"/>
+        <result property="stock" column="STOCK"/>
+        <collection property="gspList" ofType="GoodSecondParam">
+            <id property="gspid" column="GSPID"/>
+            <result property="sparam_name" column="SPARAM_NAME"/>
+            <result property="add_prices" column="ADD_PRICES"/>
+            <result property="stocks" column="STOCKS"/>
+        </collection>
+    </resultMap>
+    <select id="findGoodParam" parameterType="int" resultMap="gp">
+      select * from good_main_param gmp left join good_second_param gsp on gmp.GMPID=gsp.GMPID where GID=#{gid};
+    </select>
+</mapper>

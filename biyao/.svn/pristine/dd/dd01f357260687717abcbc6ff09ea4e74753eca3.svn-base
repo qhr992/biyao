@@ -1,0 +1,33 @@
+package com.cmhzteam.entity.zhj;
+
+public class Ptype {
+    private int pid;
+    private String ptype_name;
+
+    public Ptype() {
+    }
+
+    public int getPid() {
+        return pid;
+    }
+
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
+
+    public String getPtype_name() {
+        return ptype_name;
+    }
+
+    public void setPtype_name(String ptype_name) {
+        this.ptype_name = ptype_name;
+    }
+
+    @Override
+    public String toString() {
+        return "Ptype{" +
+                "pid=" + pid +
+                ", ptype_name='" + ptype_name + '\'' +
+                '}';
+    }
+}

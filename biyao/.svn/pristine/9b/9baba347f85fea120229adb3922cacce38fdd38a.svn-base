@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div class="pub_nav topBanner slideUp">
+    <div class="wrap clearfix bg_333">
+        <div class="f_l">
+            <ul class="pub_nav_list sizeZero">
+
+                <li class="inline"><a href="index.html">首页</a><span class="bg"></span></li>
+                <li class="inline"><a href="sjzx.html">商家中心</a><span class="bg"></span></li>
+                <li class="inline"><a href="sjzx.html">平台政策</a><span class="bg"></span></li>
+                <!-- 					<li class="inline last"><a href="list.html#complaint/toAddComplaint">非法信息投诉</a><span class="bg"></span></li> -->
+                <li class="inline last newapp">
+                    <a href="#">必要手机版</a>
+                    <div class="app_box">
+                        <span class="inline upArre"></span>
+                        <div class="con">
+                            <p class="sj_evm"></p>
+                            <p class="lineH24 col_666 f14">必要手机版</p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="f_r">
+            <ul class="pub_nav_list sizeZero">
+                <!--如果没有用户-->
+                <tr th:if="${#lists.isEmpty(user)}">
+                    <li class="inline" id="welcomID"><span class="col_aaa mg_r10">欢迎来到必要，请</span><a class=""
+                                                                                                    onclick='LT.login_uri("login.html")'>登录</a><span
+                            class="bg"></span></li>
+                    <li class="inline" id="messageID"><a onclick='LT.register_uri("register.html")'>注册</a><span
+                            class="bg"></span></li>
+                </tr>
+                <!--如果有用户-->
+                <tr th:if="${not #lists.isEmpty(user)}">
+                    <li class="inline" id="welcomID"><span class="col_aaa mg_r10">欢迎来到必要，</span><span
+                            class="col_aaa mg_r10" th:text="${user}"></span></li>
+                </tr>
+                <li class="inline last">
+                    <a href="javascript:void(0);" class="">个人中心<i class="inline pep_bg mg_l10"></i></a>
+                    <div class="app_box">
+                        <span class="inline upArre"></span>
+                        <div class="bg_fff down_list_box">
+                            <a class="inline" href="MyOrder.html">我的订单</a>
+                            <a class="inline" href="Profile.html">个人设置</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="inline last pd_r0 shopping_cart vTop">
+                    <a class="inline sizeZero" href="/shopcars.html">
+                        <i class="inline"></i>
+                        <span id="shopcarNumID" class="inline">购物车 0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

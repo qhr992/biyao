@@ -1,0 +1,71 @@
+package com.cmhzteam.entity.lyp;
+
+public class GoodSecondParam {
+    private int gspid;
+    private int gmpid;
+    private String sparam_name;
+    private double add_price;
+    private int stock;
+
+    public GoodSecondParam() {
+    }
+
+    public GoodSecondParam(int gspid, int gmpid, String sparam_name, double add_price, int stock) {
+        this.gspid = gspid;
+        this.gmpid = gmpid;
+        this.sparam_name = sparam_name;
+        this.add_price = add_price;
+        this.stock = stock;
+    }
+
+    public int getGspid() {
+        return gspid;
+    }
+
+    public void setGspid(int gspid) {
+        this.gspid = gspid;
+    }
+
+    public int getGmpid() {
+        return gmpid;
+    }
+
+    public void setGmpid(int gmpid) {
+        this.gmpid = gmpid;
+    }
+
+    public String getSparam_name() {
+        return sparam_name;
+    }
+
+    public void setSparam_name(String sparam_name) {
+        this.sparam_name = sparam_name;
+    }
+
+    public double getAdd_price() {
+        return add_price;
+    }
+
+    public void setAdd_price(double add_price) {
+        this.add_price = add_price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    @Override
+    public String toString() {
+        return "GoodSecondParam{" +
+                "gspid=" + gspid +
+                ", gmpid=" + gmpid +
+                ", sparam_name='" + sparam_name + '\'' +
+                ", add_price=" + add_price +
+                ", stock=" + stock +
+                '}';
+    }
+}
